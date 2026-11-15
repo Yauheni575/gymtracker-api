@@ -4,15 +4,22 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Entity
+@SQLDelete(sql = "UPDATE food SET deleted = true WHERE id = ?")
+@SQLRestriction("deleted = false")
 public class Food {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String uuid = UUID.randomUUID().toString();
 
     private Long userId;
     private LocalDate date;
