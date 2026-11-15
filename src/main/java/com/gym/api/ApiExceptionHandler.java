@@ -1,6 +1,7 @@
 package com.gym.api;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -40,6 +41,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   WebRequest request) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(status, "Некорректный JSON или формат поля");
         return handleExceptionInternal(ex, problem, headers, status, request);
+    }
+
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ProblemDetail handleBadSort(PropertyReferenceException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Нельзя сортировать по полю " + ex.getPropertyName());
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)

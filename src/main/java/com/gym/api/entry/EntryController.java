@@ -2,6 +2,9 @@ package com.gym.api.entry;
 
 import com.gym.api.auth.CurrentUserId;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -27,11 +29,12 @@ public class EntryController {
     }
 
     @GetMapping("/exercises/{exerciseId}/entries")
-    public List<EntryResponse> find(@CurrentUserId Long userId,
-                                    @PathVariable Long exerciseId,
-                                    @RequestParam(defaultValue = "1970-01-01") LocalDate from,
-                                    @RequestParam(defaultValue = "9999-12-31") LocalDate to) {
-        return service.find(userId, exerciseId, from, to);
+    public PagedModel<EntryResponse> find(@CurrentUserId Long userId,
+                                          @PathVariable Long exerciseId,
+                                          @RequestParam(defaultValue = "1970-01-01") LocalDate from,
+                                          @RequestParam(defaultValue = "9999-12-31") LocalDate to,
+                                          @PageableDefault(size = 50, sort = {"date", "id"}) Pageable pageable) {
+        return service.find(userId, exerciseId, from, to, pageable);
     }
 
     @PostMapping("/exercises/{exerciseId}/entries")

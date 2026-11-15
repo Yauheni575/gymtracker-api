@@ -1,13 +1,14 @@
 package com.gym.api.entry;
 
 import com.gym.api.exercise.ExerciseService;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Service
 public class EntryService {
@@ -20,10 +21,11 @@ public class EntryService {
         this.exercises = exercises;
     }
 
-    public List<EntryResponse> find(Long userId, Long exerciseId, LocalDate from, LocalDate to) {
+    public PagedModel<EntryResponse> find(Long userId, Long exerciseId, LocalDate from, LocalDate to,
+                                          Pageable pageable) {
         exercises.get(userId, exerciseId);
-        return repository.findByExerciseIdAndDateBetweenOrderByDateAscIdAsc(exerciseId, from, to)
-                .stream().map(EntryResponse::from).toList();
+        return new PagedModel<>(repository.findByExerciseIdAndDateBetween(exerciseId, from, to, pageable)
+                .map(EntryResponse::from));
     }
 
     @Transactional
