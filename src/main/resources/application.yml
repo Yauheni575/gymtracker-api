@@ -1,8 +1,11 @@
+server:
+  port: ${PORT:8080}
+
 spring:
   application:
     name: gymtracker-api
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5433/gymtracker}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/${DB_NAME:gymtracker}
     username: ${DB_USER:gym}
     password: ${DB_PASSWORD:gym}
   jpa:
